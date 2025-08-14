@@ -34,7 +34,7 @@ export default function PowerBIReport() {
       const resp = await fetch(
         "https://teste-calculadora-backend.vercel.app/getEmbedToken"
       );
-      if (!resp.ok) throw new Error("Falha ao obter embed token");
+      if (!resp.ok) throw new Error("Falha ao obter embed tokennnn");
       const data: EmbedResponse = await resp.json();
       if (!pbiClient) return;
       const config: IEmbedConfiguration = {
