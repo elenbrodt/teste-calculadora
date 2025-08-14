@@ -1,6 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import type { models, IEmbedConfiguration, service } from "powerbi-client";
+import type {
+  models,
+  IEmbedConfiguration,
+  Report,
+  service,
+  factories,
+} from "powerbi-client";
 
 type EmbedResponse = {
   embedToken: string;
@@ -11,39 +17,35 @@ type EmbedResponse = {
 
 export default function PowerBIReport() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pbiClient, setPbiClient] = useState<{
-    models: typeof models;
-    service: typeof service;
-    factories: any;
-  } | null>(null);
+
+  // guarda o módulo inteiro do powerbi-client (tipado)
+  const [pbi, setPbi] = useState<typeof import("powerbi-client") | null>(null);
 
   // Carrega powerbi-client no browser
   useEffect(() => {
-    import("powerbi-client").then((lib) => {
-      setPbiClient(lib);
-    });
+    import("powerbi-client").then((lib) => setPbi(lib));
   }, []);
 
   useEffect(() => {
-    if (!pbiClient) return; // evita rodar até ter a lib carregada
+    if (!pbi) return;
 
-    let report: any;
-    let renewTimer: number | undefined;
+    let report: Report | null = null;
+    let renewTimer: number | null = null;
 
     async function run() {
       const resp = await fetch(
         "https://teste-calculadora-backend.vercel.app/getEmbedToken"
       );
-      if (!resp.ok) throw new Error("Falha ao obter embed tokennnn");
-      const data: EmbedResponse = await resp.json();
-      if (!pbiClient) return;
+      if (!resp.ok) throw new Error("Falha ao obter embed token");
+      const data: EmbedResponse = (await resp.json()) as EmbedResponse;
+      if (!pbi) return;
       const config: IEmbedConfiguration = {
         type: "report",
         id: data.reportId,
         embedUrl: data.embedUrl,
         accessToken: data.embedToken,
-        tokenType: pbiClient.models.TokenType.Embed,
-        permissions: pbiClient.models.Permissions.Read,
+        tokenType: pbi.models.TokenType.Embed,
+        permissions: pbi.models.Permissions.Read,
         settings: {
           panes: {
             filters: { visible: false },
@@ -52,39 +54,51 @@ export default function PowerBIReport() {
         },
       };
 
-      const service = new pbiClient.service.Service(
-        pbiClient.factories.hpmFactory,
-        pbiClient.factories.wpmpFactory,
-        pbiClient.factories.routerFactory
+      const svc = new pbi.service.Service(
+        pbi.factories.hpmFactory,
+        pbi.factories.wpmpFactory,
+        pbi.factories.routerFactory
       );
 
       if (containerRef.current) {
-        service.reset(containerRef.current);
-        report = service.embed(containerRef.current, config);
+        svc.reset(containerRef.current);
+        // embed retorna um Report quando type === "report"
+        report = svc.embed(containerRef.current, config) as Report;
 
-        report.on("error", (e: any) => console.error(e?.detail));
+        report.on("error", (e: service.ICustomEvent<models.IError>) => {
+          // e.detail contém o objeto de erro do Power BI
+          // eslint-disable-next-line no-console
+          console.error(e.detail);
+        });
       }
 
-      if (data.expiration) {
+      if (data.expiration && report) {
         const renewAt =
           new Date(data.expiration).getTime() - Date.now() - 60_000;
+
         renewTimer = window.setTimeout(async () => {
           const r = await fetch("/getEmbedToken");
-          const j: EmbedResponse = await r.json();
+          if (!r.ok) return;
+          const j: EmbedResponse = (await r.json()) as EmbedResponse;
           await report?.setAccessToken(j.embedToken);
         }, Math.max(0, renewAt));
       }
     }
 
-    run();
+    run().catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    });
 
     return () => {
-      if (renewTimer) clearTimeout(renewTimer);
+      if (renewTimer !== null) {
+        clearTimeout(renewTimer);
+      }
     };
-  }, [pbiClient]);
+  }, [pbi]);
 
-  if (!pbiClient) {
-    return <div>Carregando relatório...</div>; // placeholder até carregar lib
+  if (!pbi) {
+    return <div>Carregando relatório...</div>;
   }
 
   return (
