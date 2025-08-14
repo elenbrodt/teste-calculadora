@@ -31,7 +31,9 @@ export default function PowerBIReport() {
     let renewTimer: number | undefined;
 
     async function run() {
-      const resp = await fetch("http://localhost:3000/getEmbedToken");
+      const resp = await fetch(
+        "https://teste-calculadora-backend.vercel.app/getEmbedToken"
+      );
       if (!resp.ok) throw new Error("Falha ao obter embed token");
       const data: EmbedResponse = await resp.json();
       if (!pbiClient) return;
