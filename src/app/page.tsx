@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PowerBIReport from "./components/powerBiReport";
 
 export default function Home() {
   return (
@@ -12,28 +13,7 @@ export default function Home() {
           priority
         />
         <div>
-          {/* <iframe
-            title="Simulador RT - Simples Nacional v1.1"
-            width="100%"
-            height="100%"
-            src="https://app.powerbi.com/reportEmbed?reportId=bdf168cb-54a7-4354-bda7-d8ae57f4581a&autoAuth=true&ctid=09c84ef1-b748-483c-9a33-9e33fbda6ee3"
-            allowFullScreen={true}
-            className="w-[80vw] h-[80vh]"
-          ></iframe> */}
-          {/* <iframe
-            title="teste-bi"
-            width="800"
-            height="486"
-            src="https://app.powerbi.com/view?r=eyJrIjoiOTMzYTc3NGEtOWVhOS00OGRhLThjMWEtMjU2ZTZhNzZhNTJjIiwidCI6IjA5Yzg0ZWYxLWI3NDgtNDgzYy05YTMzLTllMzNmYmRhNmVlMyJ9"
-            allowFullScreen
-          ></iframe> */}
-          <iframe
-            title="Simulador RT - Simples Nacional v1.1"
-            width="900"
-            height="586"
-            src="https://app.powerbi.com/view?r=eyJrIjoiYTNmNGZiNzctMTdkOC00MTFhLWI5ZmQtMDZiNDllYjhiOWYyIiwidCI6IjA5Yzg0ZWYxLWI3NDgtNDgzYy05YTMzLTllMzNmYmRhNmVlMyJ9"
-            allowFullScreen
-          ></iframe>
+          <PowerBIReport />;
         </div>
       </main>
     </div>
