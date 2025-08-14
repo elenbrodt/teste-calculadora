@@ -34,7 +34,7 @@ export default function PowerBIReport() {
 
     async function run() {
       const resp = await fetch(
-        "https://teste-calculadora-backend.vercel.app/api/getEmbedToken"
+        "https://teste-calculadora-backend.vercel.app/api/getEmbededToken"
       );
       if (!resp.ok) throw new Error("Falha ao obter embed token");
       const data: EmbedResponse = (await resp.json()) as EmbedResponse;
