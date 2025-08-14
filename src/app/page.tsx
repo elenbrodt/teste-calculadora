@@ -20,11 +20,18 @@ export default function Home() {
             allowFullScreen={true}
             className="w-[80vw] h-[80vh]"
           ></iframe> */}
-          <iframe
+          {/* <iframe
             title="teste-bi"
             width="800"
             height="486"
             src="https://app.powerbi.com/view?r=eyJrIjoiOTMzYTc3NGEtOWVhOS00OGRhLThjMWEtMjU2ZTZhNzZhNTJjIiwidCI6IjA5Yzg0ZWYxLWI3NDgtNDgzYy05YTMzLTllMzNmYmRhNmVlMyJ9"
+            allowFullScreen
+          ></iframe> */}
+          <iframe
+            title="Simulador RT - Simples Nacional v1.1"
+            width="900"
+            height="586"
+            src="https://app.powerbi.com/view?r=eyJrIjoiYTNmNGZiNzctMTdkOC00MTFhLWI5ZmQtMDZiNDllYjhiOWYyIiwidCI6IjA5Yzg0ZWYxLWI3NDgtNDgzYy05YTMzLTllMzNmYmRhNmVlMyJ9"
             allowFullScreen
           ></iframe>
         </div>
