@@ -12,11 +12,6 @@ export default function Home() {
           height={38}
           priority
         />
-        <iframe
-          src="https://teste-calculadora-zoom.netlify.app/"
-          className="w-[100vw] h-[100vh]"
-          allowFullScreen
-        ></iframe>
         <div>
           <PowerBIReport />;
         </div>
